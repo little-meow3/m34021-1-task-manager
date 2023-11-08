@@ -27,15 +27,22 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
         updatedAt = createdAt
     }
 
+//    @StateTransitionFunc
+//    fun tagCreatedApply(event: TagCreatedEvent) {
+//        projectTags[event.tagId] = TagEntity(event.tagId, event.tagName)
+//        updatedAt = createdAt
+//    }
+
     @StateTransitionFunc
-    fun tagCreatedApply(event: TagCreatedEvent) {
-        projectTags[event.tagId] = TagEntity(event.tagId, event.tagName)
+    fun taskCreatedApply(event: TaskCreatedEvent) {
+        tasks[event.taskId] = TaskEntity(event.taskId, event.taskName, null, mutableSetOf())
         updatedAt = createdAt
     }
 
     @StateTransitionFunc
-    fun taskCreatedApply(event: TaskCreatedEvent) {
-        tasks[event.taskId] = TaskEntity(event.taskId, event.taskName, mutableSetOf())
+    fun taskNameChangedApply(event: TaskNameChangedEvent) {
+        val task = tasks[event.taskId]
+        tasks[event.taskId] = TaskEntity(event.taskId, event.newTaskName, task?.statusId, task?.usersAssigned)
         updatedAt = createdAt
     }
 }
@@ -43,7 +50,8 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
 data class TaskEntity(
     val id: UUID = UUID.randomUUID(),
     val name: String,
-    val tagsAssigned: MutableSet<UUID>
+    val statusId: UUID?,
+    val usersAssigned: MutableSet<UUID>?
 )
 
 data class TagEntity(
@@ -54,9 +62,9 @@ data class TagEntity(
 /**
  * Demonstrates that the transition functions might be representer by "extension" functions, not only class members functions
  */
-@StateTransitionFunc
-fun ProjectAggregateState.tagAssignedApply(event: TagAssignedToTaskEvent) {
-    tasks[event.taskId]?.tagsAssigned?.add(event.tagId)
-        ?: throw IllegalArgumentException("No such task: ${event.taskId}")
-    updatedAt = createdAt
-}
+//@StateTransitionFunc
+//fun ProjectAggregateState.tagAssignedApply(event: TagAssignedToTaskEvent) {
+//    tasks[event.taskId]?.tagsAssigned?.add(event.tagId)
+//        ?: throw IllegalArgumentException("No such task: ${event.taskId}")
+//    updatedAt = createdAt
+//}
