@@ -4,11 +4,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ru.quipy.api.ProjectAggregate
+import ru.quipy.api.*
 //import ru.quipy.api.TagAssignedToTaskEvent
 //import ru.quipy.api.TagCreatedEvent
-import ru.quipy.api.TaskCreatedEvent
-import ru.quipy.api.TaskNameChangedEvent
 import ru.quipy.streams.AggregateSubscriptionsManager
 import javax.annotation.PostConstruct
 
@@ -30,6 +28,14 @@ class ProjectEventsSubscriber {
 
             `when`(TaskNameChangedEvent::class) { event ->
                 logger.info("Task name changed: {}", event.newTaskName)
+            }
+
+            `when`(StatusAddedEvent::class) { event ->
+                logger.info("Status added: {}", event.statusName)
+            }
+
+            `when`(StatusAssignedToTaskEvent::class) { event ->
+                logger.info("Status {} assigned to Task {}", event.statusId, event.taskId)
             }
 
 //            `when`(TagCreatedEvent::class) { event ->

@@ -6,10 +6,9 @@ import java.awt.Color
 import java.util.*
 
 const val PROJECT_CREATED_EVENT = "PROJECT_CREATED_EVENT"
-//const val TAG_CREATED_EVENT = "TAG_CREATED_EVENT"
-//const val TAG_ASSIGNED_TO_TASK_EVENT = "TAG_ASSIGNED_TO_TASK_EVENT"
 const val TASK_CREATED_EVENT = "TASK_CREATED_EVENT"
 const val TASK_NAME_CHANGED = "TASK_NAME_CHANGED"
+const val STATUS_ASSIGNED_TO_TASK_EVENT = "STATUS_ASSIGNED_TO_TASK_EVENT"
 
 // API
 @DomainEvent(name = PROJECT_CREATED_EVENT)
@@ -22,17 +21,6 @@ class ProjectCreatedEvent(
     name = PROJECT_CREATED_EVENT,
     createdAt = createdAt,
 )
-
-//@DomainEvent(name = TAG_CREATED_EVENT)
-//class TagCreatedEvent(
-//    val projectId: UUID,
-//    val tagId: UUID,
-//    val tagName: String,
-//    createdAt: Long = System.currentTimeMillis(),
-//) : Event<ProjectAggregate>(
-//    name = TAG_CREATED_EVENT,
-//    createdAt = createdAt,
-//)
 
 @DomainEvent(name = TASK_CREATED_EVENT)
 class TaskCreatedEvent(
@@ -69,13 +57,13 @@ class StatusAddedEvent(
         createdAt = createdAt,
 )
 
-//@DomainEvent(name = TAG_ASSIGNED_TO_TASK_EVENT)
-//class TagAssignedToTaskEvent(
-//    val projectId: UUID,
-//    val taskId: UUID,
-//    val tagId: UUID,
-//    createdAt: Long = System.currentTimeMillis(),
-//) : Event<ProjectAggregate>(
-//    name = TAG_ASSIGNED_TO_TASK_EVENT,
-//    createdAt = createdAt
-//)
+@DomainEvent(name = STATUS_ASSIGNED_TO_TASK_EVENT)
+class StatusAssignedToTaskEvent(
+    val projectId: UUID,
+    val taskId: UUID,
+    val statusId: UUID,
+    createdAt: Long = System.currentTimeMillis(),
+) : Event<ProjectAggregate>(
+    name = STATUS_ASSIGNED_TO_TASK_EVENT,
+    createdAt = createdAt
+)

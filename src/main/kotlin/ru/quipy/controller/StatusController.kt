@@ -33,7 +33,7 @@ class StatusController(
 //        project.statusCreatedApply(StatusEntity(statusId, statusName, 0, ColorFactory.valueOf(color)))
 
         return statusEsService.create {
-            it.create(projectId, UUID.randomUUID(), statusName, project.projectStatuses.size + 1, ColorFactory.valueOf(color))
+            it.create(projectId, statusId, statusName, project.projectStatuses.size + 1, ColorFactory.valueOf(color))
         }
     }
 
