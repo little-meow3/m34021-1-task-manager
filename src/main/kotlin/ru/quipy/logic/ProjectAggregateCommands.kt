@@ -1,10 +1,10 @@
 package ru.quipy.logic
 
-import ru.quipy.api.ProjectCreatedEvent
+import ru.quipy.api.*
+//import ru.quipy.api.StatusCreatedEvent
 //import ru.quipy.api.TagAssignedToTaskEvent
 //import ru.quipy.api.TagCreatedEvent
-import ru.quipy.api.TaskCreatedEvent
-import ru.quipy.api.TaskNameChangedEvent
+import java.awt.Color
 import java.util.*
 
 
@@ -28,6 +28,10 @@ fun ProjectAggregateState.changeTaskName(taskId: UUID, newName: String): TaskNam
         throw IllegalArgumentException("Task doesn't exists: $taskId")
     }
     return TaskNameChangedEvent(projectId = this.getId(), taskId = taskId, newTaskName = newName)
+}
+
+fun ProjectAggregateState.addStatus(statusId: UUID, name: String, order:Int, color: Color): StatusAddedEvent {
+    return StatusAddedEvent(projectId = this.getId(), statusId = statusId, statusName = name, order = order, color = color)
 }
 
 //fun ProjectAggregateState.createTag(name: String): TagCreatedEvent {

@@ -2,6 +2,7 @@ package ru.quipy.api
 
 import ru.quipy.core.annotations.DomainEvent
 import ru.quipy.domain.Event
+import java.awt.Color
 import java.util.*
 
 const val PROJECT_CREATED_EVENT = "PROJECT_CREATED_EVENT"
@@ -53,6 +54,19 @@ class TaskNameChangedEvent(
 ) : Event<ProjectAggregate>(
         name = TASK_NAME_CHANGED,
         createdAt = createdAt
+)
+
+@DomainEvent(name = STATUS_CREATED_EVENT)
+class StatusAddedEvent(
+        val projectId: UUID,
+        val statusId: UUID,
+        val statusName: String,
+        val order: Int,
+        val color: Color,
+        createdAt: Long = System.currentTimeMillis(),
+) : Event<ProjectAggregate>(
+        name = STATUS_CREATED_EVENT,
+        createdAt = createdAt,
 )
 
 //@DomainEvent(name = TAG_ASSIGNED_TO_TASK_EVENT)

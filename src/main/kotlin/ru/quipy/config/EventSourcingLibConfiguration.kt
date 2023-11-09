@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import ru.quipy.api.ProjectAggregate
+import ru.quipy.api.StatusAggregate
 import ru.quipy.core.EventSourcingServiceFactory
 import ru.quipy.logic.ProjectAggregateState
+import ru.quipy.logic.StatusAggregateState
 import ru.quipy.projections.AnnotationBasedProjectEventsSubscriber
+import ru.quipy.projections.AnnotationBasedStatusEventsSubscriber
 import ru.quipy.streams.AggregateEventStreamManager
 import ru.quipy.streams.AggregateSubscriptionsManager
 import java.util.*
@@ -45,6 +48,9 @@ class EventSourcingLibConfiguration {
     private lateinit var projectEventSubscriber: AnnotationBasedProjectEventsSubscriber
 
     @Autowired
+    private lateinit var statusEventSubscriber: AnnotationBasedStatusEventsSubscriber
+
+    @Autowired
     private lateinit var eventSourcingServiceFactory: EventSourcingServiceFactory
 
     @Autowired
@@ -56,10 +62,14 @@ class EventSourcingLibConfiguration {
     @Bean
     fun projectEsService() = eventSourcingServiceFactory.create<UUID, ProjectAggregate, ProjectAggregateState>()
 
+    @Bean
+    fun statusEsService() = eventSourcingServiceFactory.create<UUID, StatusAggregate, StatusAggregateState>()
+
     @PostConstruct
     fun init() {
         // Demonstrates how to explicitly subscribe the instance of annotation based subscriber to some stream. See the [AggregateSubscriptionsManager]
         subscriptionsManager.subscribe<ProjectAggregate>(projectEventSubscriber)
+        subscriptionsManager.subscribe<StatusAggregate>(statusEventSubscriber)
 
         // Demonstrates how you can set up the listeners to the event stream
         eventStreamManager.maintenance {

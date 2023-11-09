@@ -3,6 +3,7 @@ package ru.quipy.logic
 import ru.quipy.api.*
 import ru.quipy.core.annotations.StateTransitionFunc
 import ru.quipy.domain.AggregateState
+import java.awt.Color
 import java.util.*
 
 // Service's business logic
@@ -14,7 +15,7 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
     lateinit var projectTitle: String
     lateinit var creatorId: String
     var tasks = mutableMapOf<UUID, TaskEntity>()
-    var projectTags = mutableMapOf<UUID, TagEntity>()
+    var projectStatuses = mutableMapOf<UUID, StatusEntity>()
 
     override fun getId() = projectId
 
@@ -45,6 +46,14 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
         tasks[event.taskId] = TaskEntity(event.taskId, event.newTaskName, task?.statusId, task?.usersAssigned)
         updatedAt = createdAt
     }
+
+    @StateTransitionFunc
+    fun statusCreatedApply(event: StatusAddedEvent) {
+        projectStatuses[event.id] =
+                StatusEntity(event.id, event.name, event.order, event.color)
+        updatedAt = createdAt
+        return
+    }
 }
 
 data class TaskEntity(
@@ -54,9 +63,11 @@ data class TaskEntity(
     val usersAssigned: MutableSet<UUID>?
 )
 
-data class TagEntity(
-    val id: UUID = UUID.randomUUID(),
-    val name: String
+data class StatusEntity(
+    val id: UUID,
+    val name: String,
+    val order: Int,
+    val color: Color
 )
 
 /**
