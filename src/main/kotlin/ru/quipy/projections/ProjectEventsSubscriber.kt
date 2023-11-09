@@ -37,14 +37,6 @@ class ProjectEventsSubscriber {
             `when`(StatusAssignedToTaskEvent::class) { event ->
                 logger.info("Status {} assigned to Task {}", event.statusId, event.taskId)
             }
-
-//            `when`(TagCreatedEvent::class) { event ->
-//                logger.info("Tag created: {}", event.tagName)
-//            }
-//
-//            `when`(TagAssignedToTaskEvent::class) { event ->
-//                logger.info("Tag {} assigned to task {}: ", event.tagId, event.taskId)
-//            }
         }
     }
 }
