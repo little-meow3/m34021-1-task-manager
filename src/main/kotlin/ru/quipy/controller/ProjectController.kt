@@ -44,7 +44,7 @@ class ProjectController(
         }
     }
 
-    @PostMapping("/{projectId}/tasks/{taskId}")
+    @PostMapping("/{projectId}/{taskId}/status")
     fun assignStatusToTask(@PathVariable projectId: UUID, @PathVariable taskId:UUID, @RequestParam statusId: UUID) :
             StatusAssignedToTaskEvent {
         return projectEsService.update(projectId) {
@@ -58,6 +58,16 @@ class ProjectController(
                 ?: throw IllegalArgumentException("There is no user: $userId")
         return projectEsService.update(projectId) {
             it.addUserToProject(userId, user.nickName, user.userName)
+        }
+    }
+
+    @PostMapping("/{projectId}/{taskId}/users")
+    fun addUserToProject(@PathVariable projectId: UUID, @PathVariable taskId:UUID, @RequestParam userId: UUID) :
+            UserAssignedToTaskEvent {
+        val user = userEsService.getState(userId)
+                ?: throw IllegalArgumentException("There is no user: $userId")
+        return projectEsService.update(projectId) {
+            it.assignUserToTask(userId, taskId)
         }
     }
 }

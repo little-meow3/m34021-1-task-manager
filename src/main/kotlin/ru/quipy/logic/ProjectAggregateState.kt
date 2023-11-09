@@ -61,6 +61,12 @@ class ProjectAggregateState : AggregateState<UUID, ProjectAggregate> {
         participants[event.userId] = UserEntity(event.userId, event.nickName, event.userName)
         updatedAt = createdAt
     }
+
+    @StateTransitionFunc
+    fun userAssignedToTaskApply(event: UserAssignedToTaskEvent) {
+        tasks[event.taskId]?.usersAssigned?.add(event.userId)
+        updatedAt = createdAt
+    }
 }
 
 data class TaskEntity(
@@ -86,9 +92,3 @@ data class UserEntity(
 /**
  * Demonstrates that the transition functions might be representer by "extension" functions, not only class members functions
  */
-//@StateTransitionFunc
-//fun ProjectAggregateState.tagAssignedApply(event: TagAssignedToTaskEvent) {
-//    tasks[event.taskId]?.tagsAssigned?.add(event.tagId)
-//        ?: throw IllegalArgumentException("No such task: ${event.taskId}")
-//    updatedAt = createdAt
-//}

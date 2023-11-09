@@ -46,7 +46,14 @@ fun ProjectAggregateState.assignStatusToTask(taskId: UUID, statusId: UUID): Stat
 
 fun ProjectAggregateState.addUserToProject(userId: UUID, nickName: String, userName: String): UserAddedToProjectEvent {
     if (participants.contains(userId)) {
-        throw IllegalArgumentException("User already exists: $userId")
+        throw IllegalArgumentException("User already in project: $userId")
     }
     return UserAddedToProjectEvent(projectId = this.getId(), userId = userId, nickName = nickName, userName =  userName)
+}
+
+fun ProjectAggregateState.assignUserToTask(userId: UUID, taskId: UUID): UserAssignedToTaskEvent {
+    if (tasks.contains(userId)) {
+        throw IllegalArgumentException("User already assigned: $userId")
+    }
+    return UserAssignedToTaskEvent(projectId = this.getId(), userId = userId, taskId = taskId)
 }

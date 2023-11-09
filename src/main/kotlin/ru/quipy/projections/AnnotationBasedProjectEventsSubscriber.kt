@@ -40,4 +40,9 @@ class AnnotationBasedProjectEventsSubscriber {
     fun userAddedSubscriber(event: UserAddedToProjectEvent) {
         logger.info("User added: {}", event.userId)
     }
+
+    @SubscribeEvent
+    fun userAssignedToTaskSubscriber(event: UserAssignedToTaskEvent) {
+        logger.info("User {} assigned to Task {}", event.userId, event.taskId)
+    }
 }
