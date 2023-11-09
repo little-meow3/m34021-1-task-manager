@@ -7,7 +7,6 @@ import ru.quipy.api.StatusAggregate
 import ru.quipy.api.StatusCreatedEvent
 import ru.quipy.core.EventSourcingService
 import ru.quipy.logic.*
-import java.awt.Color
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -29,8 +28,6 @@ class StatusController(
         projectEsService.update(projectId) {
             it.addStatus(statusId, statusName, project.projectStatuses.size + 1, ColorFactory.valueOf(color))
         }
-//        projectEsService.update(projectId, StatusCreatedEvent(projectId, statusId, statusName, ColorFactory.valueOf(color)))
-//        project.statusCreatedApply(StatusEntity(statusId, statusName, 0, ColorFactory.valueOf(color)))
 
         return statusEsService.create {
             it.create(projectId, statusId, statusName, project.projectStatuses.size + 1, ColorFactory.valueOf(color))

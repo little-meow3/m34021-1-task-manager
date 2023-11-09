@@ -37,6 +37,10 @@ class ProjectEventsSubscriber {
             `when`(StatusAssignedToTaskEvent::class) { event ->
                 logger.info("Status {} assigned to Task {}", event.statusId, event.taskId)
             }
+
+            `when`(UserAddedToProjectEvent::class) { event ->
+                logger.info("User added: {}", event.userId)
+            }
         }
     }
 }

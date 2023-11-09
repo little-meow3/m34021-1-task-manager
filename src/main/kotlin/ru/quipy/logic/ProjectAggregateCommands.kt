@@ -44,21 +44,9 @@ fun ProjectAggregateState.assignStatusToTask(taskId: UUID, statusId: UUID): Stat
     return StatusAssignedToTaskEvent(projectId = this.getId(), taskId = taskId, statusId = statusId)
 }
 
-//fun ProjectAggregateState.createTag(name: String): TagCreatedEvent {
-//    if (projectTags.values.any { it.name == name }) {
-//        throw IllegalArgumentException("Tag already exists: $name")
-//    }
-//    return TagCreatedEvent(projectId = this.getId(), tagId = UUID.randomUUID(), tagName = name)
-//}
-//
-//fun ProjectAggregateState.assignTagToTask(tagId: UUID, taskId: UUID): TagAssignedToTaskEvent {
-//    if (!projectTags.containsKey(tagId)) {
-//        throw IllegalArgumentException("Tag doesn't exists: $tagId")
-//    }
-//
-//    if (!tasks.containsKey(taskId)) {
-//        throw IllegalArgumentException("Task doesn't exists: $taskId")
-//    }
-//
-//    return TagAssignedToTaskEvent(projectId = this.getId(), tagId = tagId, taskId = taskId)
-//}
+fun ProjectAggregateState.addUserToProject(userId: UUID, nickName: String, userName: String): UserAddedToProjectEvent {
+    if (participants.contains(userId)) {
+        throw IllegalArgumentException("User already exists: $userId")
+    }
+    return UserAddedToProjectEvent(projectId = this.getId(), userId = userId, nickName = nickName, userName =  userName)
+}
