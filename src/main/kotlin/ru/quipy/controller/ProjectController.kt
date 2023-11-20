@@ -6,19 +6,17 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import ru.quipy.api.ProjectAggregate
-import ru.quipy.api.ProjectCreatedEvent
-import ru.quipy.api.TaskCreatedEvent
+import ru.quipy.api.*
 import ru.quipy.core.EventSourcingService
-import ru.quipy.logic.ProjectAggregateState
-import ru.quipy.logic.addTask
-import ru.quipy.logic.create
+import ru.quipy.logic.*
+import java.lang.IllegalArgumentException
 import java.util.*
 
 @RestController
 @RequestMapping("/projects")
 class ProjectController(
-    val projectEsService: EventSourcingService<UUID, ProjectAggregate, ProjectAggregateState>
+    val projectEsService: EventSourcingService<UUID, ProjectAggregate, ProjectAggregateState>,
+    val userEsService: EventSourcingService<UUID, UserAggregate, UserAggregateState>
 ) {
 
     @PostMapping("/{projectTitle}")
@@ -35,6 +33,41 @@ class ProjectController(
     fun createTask(@PathVariable projectId: UUID, @PathVariable taskName: String) : TaskCreatedEvent {
         return projectEsService.update(projectId) {
             it.addTask(taskName)
+        }
+    }
+
+    @PostMapping("/{projectId}/{taskId}/{newName}")
+    fun changeTaskName(@PathVariable projectId: UUID, @PathVariable taskId:UUID, @PathVariable newName: String) :
+            TaskNameChangedEvent {
+        return projectEsService.update(projectId) {
+            it.changeTaskName(taskId, newName)
+        }
+    }
+
+    @PostMapping("/{projectId}/{taskId}/status")
+    fun assignStatusToTask(@PathVariable projectId: UUID, @PathVariable taskId:UUID, @RequestParam statusId: UUID) :
+            StatusAssignedToTaskEvent {
+        return projectEsService.update(projectId) {
+            it.assignStatusToTask(taskId, statusId)
+        }
+    }
+
+    @PostMapping("/{projectId}/users/{userId}")
+    fun addUserToProject(@PathVariable projectId: UUID, @PathVariable userId:UUID) : UserAddedToProjectEvent {
+        val user = userEsService.getState(userId)
+                ?: throw IllegalArgumentException("There is no user: $userId")
+        return projectEsService.update(projectId) {
+            it.addUserToProject(userId, user.nickName, user.userName)
+        }
+    }
+
+    @PostMapping("/{projectId}/{taskId}/users")
+    fun addUserToProject(@PathVariable projectId: UUID, @PathVariable taskId:UUID, @RequestParam userId: UUID) :
+            UserAssignedToTaskEvent {
+        val user = userEsService.getState(userId)
+                ?: throw IllegalArgumentException("There is no user: $userId")
+        return projectEsService.update(projectId) {
+            it.assignUserToTask(userId, taskId)
         }
     }
 }
